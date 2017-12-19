@@ -12,19 +12,20 @@ public class Connector {
     private static String database = "assignment10";
     private static int port = 3306;
 
+    public Connector() {
+    }
+
     public static Connection getInstance() {
-        if(connection == null)
+        if (connection == null)
             return createConnection();
         else
             return connection;
     }
 
-    public Connector() {}
-
     private static Connection createConnection() {
         //checkDriver();
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:"+port+"/"+ database, user, password);
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:" + port + "/" + database, user, password);
             connection.setAutoCommit(false);
             return connection;
         } catch (SQLException ex) {

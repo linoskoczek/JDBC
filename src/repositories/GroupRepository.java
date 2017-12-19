@@ -10,21 +10,21 @@ import java.util.List;
 
 public class GroupRepository extends BaseRepository implements IGroupRepository {
 
-    private final String ENTITY_NAME = "groups";
+    private final String ENTITY = "groups";
     private final String ID = "group_id";
     private final String NAME = "group_name";
     private final String DESCRIPTION = "group_description";
 
     @Override
     public List<GroupDTO> findByName(String name) {
-        String query = "SELECT * FROM " + ENTITY_NAME + " WHERE " + NAME + " = ?";
+        String query = "SELECT * FROM " + ENTITY + " WHERE " + NAME + " = ?";
         try {
             PreparedStatement statement = getConnection().prepareStatement(query);
             statement.setString(1, name);
             statement.execute();
             ResultSet resultSet = statement.getResultSet();
             List<GroupDTO> groups = new ArrayList<>();
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 groups.add(
                         new GroupDTO(
                                 resultSet.getInt(1),
@@ -42,7 +42,7 @@ public class GroupRepository extends BaseRepository implements IGroupRepository 
 
     @Override
     public void add(GroupDTO dto) {
-        String query = "INSERT INTO " + ENTITY_NAME + " VALUES (?, ?, ?)";
+        String query = "INSERT INTO " + ENTITY + " VALUES (?, ?, ?)";
         try {
             PreparedStatement statement = getConnection().prepareStatement(query);
             statement.setInt(1, dto.getId());
@@ -56,7 +56,7 @@ public class GroupRepository extends BaseRepository implements IGroupRepository 
 
     @Override
     public void update(GroupDTO dto) {
-        String query = "UPDATE " + ENTITY_NAME +
+        String query = "UPDATE " + ENTITY +
                 " SET " + NAME + " = ?, " + DESCRIPTION + " = ? WHERE " + ID + " = ?";
         try {
             PreparedStatement statement = getConnection().prepareStatement(query);
@@ -71,7 +71,7 @@ public class GroupRepository extends BaseRepository implements IGroupRepository 
 
     @Override
     public void addOrUpdate(GroupDTO dto) {
-        if(exists(dto))
+        if (exists(dto))
             update(dto);
         else
             add(dto);
@@ -79,7 +79,7 @@ public class GroupRepository extends BaseRepository implements IGroupRepository 
 
     @Override
     public void delete(GroupDTO dto) {
-        String query = "DELETE FROM " + ENTITY_NAME + " WHERE " + ID + " = ?";
+        String query = "DELETE FROM " + ENTITY + " WHERE " + ID + " = ?";
         try {
             PreparedStatement statement = getConnection().prepareStatement(query);
             statement.setInt(1, dto.getId());
@@ -91,13 +91,13 @@ public class GroupRepository extends BaseRepository implements IGroupRepository 
 
     @Override
     public GroupDTO findById(int id) {
-        String query = "SELECT * FROM " + ENTITY_NAME + " WHERE " + ID + " = ?";
+        String query = "SELECT * FROM " + ENTITY + " WHERE " + ID + " = ?";
         try {
             PreparedStatement statement = getConnection().prepareStatement(query);
             statement.setInt(1, id);
             statement.execute();
             ResultSet resultSet = statement.getResultSet();
-            if(resultSet.next()) {
+            if (resultSet.next()) {
                 return new GroupDTO(
                         resultSet.getInt(1),
                         resultSet.getString(2),
@@ -113,12 +113,12 @@ public class GroupRepository extends BaseRepository implements IGroupRepository 
 
     @Override
     public int getCount() {
-        String query = "SELECT COUNT(*) FROM " + ENTITY_NAME;
+        String query = "SELECT COUNT(*) FROM " + ENTITY;
         try {
             PreparedStatement statement = getConnection().prepareStatement(query);
             statement.execute();
             ResultSet resultSet = statement.getResultSet();
-            if(resultSet.next()) return resultSet.getInt(1);
+            if (resultSet.next()) return resultSet.getInt(1);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -127,14 +127,14 @@ public class GroupRepository extends BaseRepository implements IGroupRepository 
 
     @Override
     public boolean exists(GroupDTO dto) {
-        String query = "SELECT * FROM " + ENTITY_NAME +
+        String query = "SELECT * FROM " + ENTITY +
                 " WHERE " + ID + " = ?";
         try {
             PreparedStatement statement = getConnection().prepareStatement(query);
             statement.setInt(1, dto.getId());
             statement.execute();
             ResultSet resultSet = statement.getResultSet();
-            if(resultSet.next()) return true;
+            if (resultSet.next()) return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -146,12 +146,12 @@ public class GroupRepository extends BaseRepository implements IGroupRepository 
     }
 
     public int getMaxId() { // returns -1 if no id
-        String query = "SELECT IFNULL(MAX(" + ID + "), -1) FROM " + ENTITY_NAME;
+        String query = "SELECT IFNULL(MAX(" + ID + "), -1) FROM " + ENTITY;
         try {
             PreparedStatement statement = getConnection().prepareStatement(query);
             statement.execute();
             ResultSet resultSet = statement.getResultSet();
-            if(resultSet.next()) return resultSet.getInt(1);
+            if (resultSet.next()) return resultSet.getInt(1);
         } catch (SQLException e) {
             e.printStackTrace();
         }

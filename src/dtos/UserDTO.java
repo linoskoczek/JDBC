@@ -5,53 +5,60 @@ import java.util.List;
 
 public class UserDTO extends DTOBase {
 
-	private String _login;
-	private String _password;
-	private List<GroupDTO> _groups;
+    private static int userCounter = 0;
+    private String _login;
+    private String _password;
+    private List<GroupDTO> _groups;
 
-	public UserDTO() {
-	}
+    public UserDTO() {
+    }
 
-	public UserDTO(int id, String login, String password) {
-		super(id);
-		_login = login;
-		_password = password;
-	}
+    public UserDTO(int id, String login, String password) {
+        super(id);
+        _login = login;
+        _password = password;
+    }
 
-	public String getLogin() {
-		return _login;
-	}
+    public UserDTO(String login, String password) {
+        super(userCounter++);
+        _login = login;
+        _password = password;
+    }
 
-	public void setLogin(String login) {
-		_login = login;
-	}
+    public String getLogin() {
+        return _login;
+    }
 
-	public String getPassword() {
-		return _password;
-	}
+    public void setLogin(String login) {
+        _login = login;
+    }
 
-	public void setPassword(String password) {
-		_password = password;
-	}
+    public String getPassword() {
+        return _password;
+    }
 
-	public List<GroupDTO> getGroups() {
-		return _groups;
-	}
+    public void setPassword(String password) {
+        _password = password;
+    }
 
-	public void setGroups(List<GroupDTO> groups) {
-		_groups = groups;
-	}
+    public List<GroupDTO> getGroups() {
+        return _groups;
+    }
 
-	public void addGroup(GroupDTO group) {
-		if (_groups == null) {
-			_groups = new LinkedList<GroupDTO>();
-		}
-		_groups.add(group);
-	}
+    public void setGroups(List<GroupDTO> groups) {
+        _groups = groups;
+    }
 
-	public void deleteGroup(GroupDTO group) {
-		if (_groups != null) {
-			_groups.remove(group);
-		}
-	}
+    public void addGroup(GroupDTO group) {
+        if (_groups == null) {
+            _groups = new LinkedList<>();
+        }
+        _groups.add(group);
+    }
+
+    public void deleteGroup(GroupDTO group) {
+        if (_groups != null) {
+            _groups.remove(group);
+        }
+    }
 }

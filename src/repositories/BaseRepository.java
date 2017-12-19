@@ -13,7 +13,7 @@ public abstract class BaseRepository {
      * COMMIT commits the current transaction, making its changes permanent.
      * ROLLBACK rolls back the current transaction, canceling its changes.
      * SET autocommit disables or enables the default autocommit mode for the current session.
-    */
+     */
 
     public Connection getConnection() {
         return Connector.getInstance();
