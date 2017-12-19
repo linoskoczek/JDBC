@@ -38,7 +38,7 @@ public final class UserRepositoryTest extends RepositoryTestBase<UserDTO, IUserR
 
     @Test
     public void delete() {
-        UserDTO dto = new UserDTO(666, "123", "321");
+        UserDTO dto = new UserDTO("123", "321");
         repository.add(dto);
         int count = repository.getCount();
         repository.delete(dto);
@@ -48,7 +48,7 @@ public final class UserRepositoryTest extends RepositoryTestBase<UserDTO, IUserR
 
     @Test
     public void findById() {
-        UserDTO dto = new UserDTO(666, "123", "321");
+        UserDTO dto = new UserDTO("123", "321");
         repository.add(dto);
         UserDTO foundObject = repository.findById("123");
         Assert.assertTrue(foundObject.getLogin().equals("123") && foundObject.getPassword().equals("321"));
@@ -70,7 +70,7 @@ public final class UserRepositoryTest extends RepositoryTestBase<UserDTO, IUserR
     @Override
     protected IUserRepository Create() {
         repository = new UserRepository();
-        testObject = new UserDTO(0, "loginExample", "passwd");
+        testObject = new UserDTO("loginExample", "passwd");
         repository.beginTransaction();
         return repository;
     }

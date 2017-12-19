@@ -13,11 +13,11 @@ public class UserDTO extends DTOBase {
     public UserDTO() {
     }
 
-    public UserDTO(int id, String login, String password) {
+    /*public UserDTO(int id, String login, String password) {
         super(id);
         _login = login;
         _password = password;
-    }
+    }*/
 
     public UserDTO(String login, String password) {
         super(userCounter++);
