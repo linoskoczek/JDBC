@@ -36,6 +36,7 @@ public class GroupRepository extends BaseRepository implements IGroupRepository 
                         )
                 );
             }
+            groups.forEach(g -> addUsersToGroup(g, getUsersFromGroup(g)));
             return groups;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -102,12 +103,13 @@ public class GroupRepository extends BaseRepository implements IGroupRepository 
             ResultSet resultSet = statement.getResultSet();
             if (resultSet.next()) {
 
-
-                return new GroupDTO(
+                GroupDTO newGroup = new GroupDTO(
                         resultSet.getInt(1),
                         resultSet.getString(2),
                         resultSet.getString(3)
                 );
+                addUsersToGroup(newGroup, getUsersFromGroup(newGroup));
+                return newGroup;
             }
 
         } catch (SQLException e) {
@@ -164,7 +166,7 @@ public class GroupRepository extends BaseRepository implements IGroupRepository 
     }
 
     private List<UserDTO> getUsersFromGroup(GroupDTO dto) {
-        String query = "SELECT " + UserRepository.LOGIN + "," + UserRepository.PASSWORD
+        String query = "SELECT " + UserRepository.ENTITY+"."+UserRepository.LOGIN + "," + UserRepository.ENTITY+"."+UserRepository.PASSWORD
                 + " FROM " + UserRepository.ENTITY + "," + GROUPS_USERS
                 + " WHERE " + UserRepository.ENTITY + "." + UserRepository.LOGIN + " = "
                                             + GROUPS_USERS + "." + UserRepository.LOGIN + " AND "
