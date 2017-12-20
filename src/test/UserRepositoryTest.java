@@ -1,8 +1,10 @@
 package test;
 
+import dtos.GroupDTO;
 import dtos.UserDTO;
 import org.junit.Assert;
 import org.junit.Test;
+import repositories.GroupRepository;
 import repositories.IUserRepository;
 import repositories.UserRepository;
 
@@ -15,9 +17,23 @@ public final class UserRepositoryTest extends RepositoryTestBase<UserDTO, IUserR
 
     @Test
     public void add() {
+        GroupDTO exampleGroup = new GroupDTO(666, "Ipsum", "Lorem");
+        addGroup(exampleGroup);
+        testObject.addGroup(exampleGroup);
         int count = repository.getCount();
         repository.add(testObject);
         Assert.assertEquals(count + 1, repository.getCount());
+        Assert.assertEquals(testObject.getGroups().size(), 1);
+
+        GroupDTO exampleGroup2 = new GroupDTO(667, "Ipsum", "Lorem");
+        addGroup(exampleGroup2);
+        testObject.addGroup(exampleGroup2);
+        Assert.assertEquals(testObject.getGroups().size(), 2);
+    }
+
+    private void addGroup(GroupDTO exampleGroup) {
+        GroupRepository groupRepository = new GroupRepository();
+        groupRepository.add(exampleGroup);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package repositories;
 
+import dtos.GroupDTO;
 import dtos.UserDTO;
 
 import java.sql.PreparedStatement;
@@ -10,13 +11,15 @@ import java.util.List;
 
 public class UserRepository extends BaseRepository implements IUserRepository {
 
-    private final String ENTITY = "users";
-    private final String LOGIN = "user_login";
-    private final String PASSWORD = "user_password";
+    static final String ENTITY = "users";
+    static final String LOGIN = "user_login";
+    private final String ID = "group_id";
+    static final String PASSWORD = "user_password";
+    private final String GROUPS_USERS = "groups_users";
 
     @Override
     public List<UserDTO> findByName(String name) {
-        String query = "SELECT * FROM " + ENTITY + " WHERE " + LOGIN + " = ?";
+        String query = "SELECT " +LOGIN+","+PASSWORD + " FROM " + ENTITY + " WHERE " + LOGIN + " = ?";
         try {
             PreparedStatement statement = getConnection().prepareStatement(query);
             statement.setString(1, name);
@@ -40,7 +43,7 @@ public class UserRepository extends BaseRepository implements IUserRepository {
 
     @Override
     public void add(UserDTO dto) {
-        String query = "INSERT INTO " + ENTITY + " VALUES (?, ?)";
+        String query = "INSERT INTO "+ENTITY +"(" + LOGIN+","+PASSWORD + ") VALUES (?, ?)";
         try {
             PreparedStatement statement = getConnection().prepareStatement(query);
             statement.setString(1, dto.getLogin());
@@ -49,6 +52,26 @@ public class UserRepository extends BaseRepository implements IUserRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        addToGroupUsers(dto);
+    }
+
+    private void addToGroupUsers(UserDTO dto) {
+        String query = "INSERT INTO "+GROUPS_USERS +"(" + LOGIN+","+GROUPS_USERS+"."+ID + ") VALUES (?, ?)";
+        List<GroupDTO> groups = dto.getGroups();
+        if(groups == null) return;
+        groups
+            .stream()
+            .map(g -> g.getId())
+            .forEach(groupId -> {
+                try {
+                    PreparedStatement statement = getConnection().prepareStatement(query);
+                    statement.setString(1, dto.getLogin());
+                    statement.setInt(2, groupId);
+                    statement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
     }
 
     @Override
@@ -63,6 +86,20 @@ public class UserRepository extends BaseRepository implements IUserRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        if(dto.getGroups() == null || dto.getGroups().size() == 0) return;
+
+        query = "DELETE FROM " + GROUPS_USERS + " WHERE " + LOGIN + " = ?";
+
+        try {
+            PreparedStatement statement = getConnection().prepareStatement(query);
+            statement.setString(1, dto.getLogin());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        addToGroupUsers(dto);
     }
 
     @Override
@@ -92,7 +129,7 @@ public class UserRepository extends BaseRepository implements IUserRepository {
     }
 
     public UserDTO findById(String login) {
-        String query = "SELECT * FROM " + ENTITY + " WHERE " + LOGIN + " = ?";
+        String query = "SELECT " +LOGIN+","+PASSWORD + " FROM " + ENTITY + " WHERE " + LOGIN + " = ?";
         try {
             PreparedStatement statement = getConnection().prepareStatement(query);
             statement.setString(1, login);
